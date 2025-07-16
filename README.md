@@ -1,85 +1,60 @@
-# GreenSpot - Smart Location Sustainability Analyzer
+# Environ
 
-## Project Overview
+**Environ** is a web‑based geospatial platform for evaluating land parcels on environmental suitability and low‑impact urban development. It combines interactive 3D mapping, advanced environmental metrics, and a composite scoring engine to deliver actionable insights for architects, planners, consultants, developers, educators, and civic tech initiatives.
 
-GreenSpot is a comprehensive web application that leverages Google's Photorealistic 3D Maps to analyze and visualize location sustainability. By integrating multiple Google Maps Platform APIs, it provides real-time environmental metrics and quality-of-life insights.
+---
 
-## Core Features
+## 🔍 Key Features
 
-### 1. Air Quality Layer
-- **Visualization**: Creates gradient circles around location with opacity based on AQI
-- **Data Source**: Google Air Quality API
-- **Scoring (20 points max)**:
-  - AQI >= 80: 16-20 points
-  - AQI >= 60: 12-16 points
-  - AQI >= 40: 8-12 points
-  - AQI >= 20: 4-8 points
-  - AQI >= 1: 0.2-4 points
-- **Panel Features**: Real-time AQI, health recommendations, dominant pollutants
+- **Parcel Drawing & Analysis**  
+  - Draw free‑form polygons or drop pins on a map  
+  - Instant elevation, slope, runoff‑risk computation  
 
-### 2. Solar Potential Layer
-- **Visualization**: 3D polygons representing rooftop solar potential
-- **Data Source**: Google Solar API
-- **Scoring (40 points max)**:
-  - Based on average sunshine (kWh/m²/year)
-  - Score = min(averageSunshine / 50, 40)
-- **Panel Features**: Annual power output, panel configurations, roof segment analysis
-- **Known Issue**:  Misalignment of 3D solar panel elements with building geometry
+- **3D Sun‑Shadow Simulation**  
+  - Real‑time shadows based on date, time, and season  
+  - Interactive time‑slider control  
 
-### 3. Walkability Layer
-- **Visualization**: 15-minute isochrone with color-coded amenity markers
-- **Data Source**: Google Places API
-- **Scoring (30 points max)**:
-  - Amenity count: Up to 15 points (2 points per amenity)
-  - Type diversity: Up to 10 points (2 points per type)
-  - Proximity: Up to 5 points (inverse of average distance)
-- **Panel Features**: Amenity categorization, distance calculations
-- **Known Issue**: Places API sometimes returns incorrect location types
+- **Multi‑Layer Environmental Metrics**  
+  - **Runoff Risk:** Terrain and slope analysis via Elevation API  
+  - **Noise Proxy:** Traffic‑based sound estimation  
+  - **Canopy Coverage:** Tree‑cover density from OpenStreetMap  
+  - **Walkability:** Amenity‑based scoring via Google Places  
+  - **Transit Access:** Proximity to bus/train hubs  
+  - **Climate Trends:** Historical temperature & rainfall  
 
-### 4. Green Spaces Layer
-- **Visualization**: 3D models with volumetric canopy representation
-- **Data Source**: Google Places API (parks)
-- **Scoring (30 points max)**:
-  - Quantity: Up to 10 points
-  - Proximity: Up to 10 points
-  - Quality (size, ratings): Up to 10 points
-- **Panel Features**: Park details, ratings, size calculations
+- **Composite Suitability Score**  
+  - Weighted aggregation of all sub‑scores  
+  - Visual breakdown and overall rating (0–100)
 
-### 5. Transit Layer
-- **Visualization**: Station markers with connection lines
-- **Data Source**: Google Places API (transit stations)
-- **Scoring (30 points max)**:
-  - Based on station count, type diversity, and proximity
-  - 3 points per station
-  - 5 points per transit type
-  - Distance points (10 - average_distance * 2)
+- **User Accounts & Persistence**  
+  - Firebase Authentication (email/OAuth)  
+  - Save, load, and export parcel analyses  
 
-## Sustainability Score Calculation
-- Total possible score: 100 points
-- Grade assignments:
-  - A+: 90-100
-  - A: 80-89
-  - B+: 70-79
-  - B: 60-69
-  - C+: 50-59
-  - C: 40-49
-  - D: 30-39
-  - F: Below 30
+- **Responsive & Performant**  
+  - Optimized WebGL overlays for smooth 3D rendering  
+  - Mobile‑first design for on‑the‑go assessments  
 
-## AI Analysis Integration
-- Uses Gemini API for insights generation
-- Processes all layer data to generate:
-  - Key sustainability strengths
-  - Improvement opportunities
-  - Overall assessment
-- Uses structured prompting for consistent analysis
+---
 
-## Technical Challenges & Solutions
+## 🏗 Architecture Overview
 
+1. **Frontend** (Next.js + React)  
+   - Interactive map canvas using Google Maps JavaScript API  
+   - Three.js WebGLOverlayView for custom 3D shadows  
+   - Tailwind CSS + ShadCN UI for consistent styling  
 
-## Future Improvements
-1. Enhanced solar panel visualization accuracy
-2. Expanded amenity type validation
-3. Additional sustainability metrics integration
-4. Performance optimization for large areas
-5. Historical data trends analysis
+2. **Backend** (Node.js + Express)  
+   - `/api/score` – Aggregates all metric services and returns a structured `SuitabilityScore` JSON  
+   - `/api/parcels` – CRUD endpoints for user‑saved parcel data  
+   - Authentication middleware validating Firebase tokens  
+
+3. **Data & Services**  
+   - **Google Elevation API** for terrain analysis  
+   - **Google Places + Distance Matrix** for walkability & transit  
+   - **OpenStreetMap** for canopy coverage  
+   - **Open‑Meteo / NOAA** for climate history  
+   - Custom traffic‑based noise proxy algorithm  
+
+4. **Persistence**  
+   - MongoDB Atlas for parcel storage  
+   - Firebase Auth for user management  
